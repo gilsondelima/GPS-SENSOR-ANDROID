@@ -16,7 +16,7 @@ type
     LocationSensor1: TLocationSensor;
     EditLat: TEdit;
     Label1: TLabel;
-    EditLog: TEdit;
+    EditLong: TEdit;
     Label2: TLabel;
     AniIndicator1: TAniIndicator;
     EditALT: TEdit;
@@ -60,7 +60,7 @@ const
 begin
   LocationManager := TJLocationManager.Wrap( ((SharedActivity.getSystemService(TJContext.JavaClass.LOCATION_SERVICE)) as ILocalObject).GetObjectID);
 
-  if LocationManager.isProviderEnabled(TJLocationManager.JavaClass.GPS_PROVIDER) then
+  if (LocationManager.isProviderEnabled(TJLocationManager.JavaClass.GPS_PROVIDER)) then
   Begin
 
     LocationManagerService := SharedActivityContext.getSystemService( TJContext.JavaClass.LOCATION_SERVICE);
@@ -141,9 +141,15 @@ end;
 
 procedure TForm1.LocationSensor1LocationChanged(Sender: TObject;
   const OldLocation, NewLocation: TLocationCoord2D);
+
 begin
-  EditLat.Text := FloatToStr(NewLocation.Latitude);
-  EditLog.Text := FloatToStr(NewLocation.Longitude);
+    EditLat.Text := FloatToStr (NewLocation.latitude);
+    EditLong.Text := FloatToStr (NewLocation.longitude);
+    EditLat.Text := StringReplace (EditLong.Text, ',', '.', [rfReplaceAll]);
+    EditLong.Text := StringReplace (EditLong.Text, ',', '.', [rfReplaceAll]);
+
+    //  EditLat.Text := FloatToStr(NewLocation.Latitude);
+//  EditLog.Text := FloatToStr(NewLocation.Longitude);
 end;
 
 end.

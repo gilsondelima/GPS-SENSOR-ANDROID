@@ -40,7 +40,7 @@
             <LocalCommand/>
             <RemoteCommand/>
         </DeployFile>
-        <DeployFile Include="c:\program files\embarcadero\rad studio\12.0\lib\android\debug\classes.dex" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="c:\program files (x86)\embarcadero\rad studio\12.0\lib\android\debug\classes.dex" Condition="'$(Config)'=='Debug'">
             <RemoteDir>GpsMobile\classes\</RemoteDir>
             <RemoteName>classes.dex</RemoteName>
             <Operation>1</Operation>
