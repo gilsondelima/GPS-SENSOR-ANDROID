@@ -65,6 +65,7 @@ object Form1: TForm1
     Width = 50.000000000000000000
   end
   object LocationSensor1: TLocationSensor
+    Optimize = False
     OnLocationChanged = LocationSensor1LocationChanged
     Left = 40
     Top = 32

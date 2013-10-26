@@ -8,7 +8,9 @@ uses
   System.Sensors, FMX.Edit, FMX.Sensors,
   FMX.Helpers.Android, Androidapi.JNI.GraphicsContentViewText,
   Androidapi.JNI.Location, Androidapi.JNIBridge, Androidapi.JNI.JavaTypes,
+
   Androidapi.JNI.Os;
+
 
 type
   TForm1 = class(TForm)
@@ -35,12 +37,17 @@ type
     { Public declarations }
   end;
 
+  //TGpsStatus = class abstract(TObject);
+
+
 var
   Form1: TForm1;
 
 implementation
 
 {$R *.fmx}
+
+
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
@@ -54,6 +61,9 @@ var
   LocationManagerService : JObject;
   LocationManager : JLocationManager;
   Location : JLocation;
+  LocationUpdates : JLocationListener;
+  LocationLooper : JLooper;
+
 const
   MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
   MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
@@ -66,18 +76,22 @@ begin
     LocationManagerService := SharedActivityContext.getSystemService( TJContext.JavaClass.LOCATION_SERVICE);
 
     if LocationManagerService = nil then
-      raise Exception.Create( 'Não pode recuperá Location Service.' );
-      LocationManager := TJLocationManager.Wrap( (LocationManagerService as ILocalObject).GetObjectID);
+       raise Exception.Create( 'Não pode recuperá Location Service.' );
+
+    LocationManager := TJLocationManager.Wrap( (LocationManagerService as ILocalObject).GetObjectID);
     if LocationManager = nil then
-      raise Exception.Create( 'Não é possível acessar Location Manager.' );
+       raise Exception.Create( 'Não é possível acessar Location Manager.' );
 
-      //Location :=  locationManager.requestLocationUpdates(TJLocationManager.JavaClass.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, );
-      //use the gps provider to get current lat, long and altitude.
+    {//use the gps provider to get current lat, long and altitude.
+    LocationManager := LocationManager.requestLocationUpdates(TJLocationManager.JavaClass.GPS_PROVIDER,  MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, LocationUpdates, LocationLooper);
+    if LocationManager = nil then
+       raise Exception.Create( 'gps error.' );
+    }
+
     Location := LocationManager.getLastKnownLocation( TJLocationManager.JavaClass.GPS_PROVIDER);
-
-
     if Location = nil then
       raise Exception.Create( 'Não é possível acessar Ultimo Localização.' );
+
   end else
   Begin
     raise Exception.Create( 'Provedor GPS não esta Ativado. Verifique por favor!' );
@@ -137,6 +151,8 @@ begin
   AniIndicator1.Enabled := True;
   LocationSensor1.OnLocationChanged := LocationSensor1LocationChanged;
   LocationSensor1.Active := True;
+  LocationSensor1.Optimize := True;
+
 end;
 
 procedure TForm1.LocationSensor1LocationChanged(Sender: TObject;
@@ -151,5 +167,6 @@ begin
     //  EditLat.Text := FloatToStr(NewLocation.Latitude);
 //  EditLog.Text := FloatToStr(NewLocation.Longitude);
 end;
+
 
 end.
